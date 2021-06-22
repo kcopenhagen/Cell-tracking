@@ -28,12 +28,6 @@ function cells = findcells(l, maskout, sm, maxl, minl, th)
     edges(end-2:end,:) = 1;
     edges(:,1:3) = 1;
     edges(:,end-2:end) = 1;
-    
-%     lays = loaddata(fpath,t,'covid_layers','int8');
-%     holes = lays==0;
-%     edges(imdilate(holes,strel('disk',1)))=1;
-%     lay2s = lays==2;
-%     edges(imdilate(lay2s,strel('disk',11)))=1;
 
     edges(maskout==1)=1;
     testpts(edges==1)=0;
@@ -81,6 +75,10 @@ function cells = findcells(l, maskout, sm, maxl, minl, th)
             inds = [inds; sub2ind(size(edges),round(sline(:,2))-1,round(sline(:,1)))];
             inds = [inds; sub2ind(size(edges),round(sline(:,2)),round(sline(:,1))+1)];
             inds = [inds; sub2ind(size(edges),round(sline(:,2)),round(sline(:,1))-1)];
+            inds = [inds; sub2ind(size(edges),round(sline(:,2))+1,round(sline(:,1))+1)];
+            inds = [inds; sub2ind(size(edges),round(sline(:,2))-1,round(sline(:,1))+1)];
+            inds = [inds; sub2ind(size(edges),round(sline(:,2))+1,round(sline(:,1))-1)];
+            inds = [inds; sub2ind(size(edges),round(sline(:,2))-1,round(sline(:,1))-1)];
             
             cells{end+1}.pix = cell;              
 
@@ -98,13 +96,8 @@ function cells = findcells(l, maskout, sm, maxl, minl, th)
         tr = tr+toc;
 
     end
-
     toc(tstrt)
-    
-%     for i = 1:numel(cells)
-%         cells{i}.fpath = fpath;
-%         cells{i}.t = t;
-%     end
-%     
+    cells = [cells{:}];
+      
 end
 

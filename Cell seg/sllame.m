@@ -8,6 +8,7 @@ function sline = sllame(vx,vy,u0,SL,Fx,Fy,donezo,l,th)
         % donezo    - Mask of regions to exclude from new cells.
         % l         - Brightness image
         % th        - Threshold of brighness for cutting off centerlines.
+        
     sz = size(vx);
     
     function f = ff(u) 
@@ -84,6 +85,10 @@ function sline = sllame(vx,vy,u0,SL,Fx,Fy,donezo,l,th)
         if f(1)*fp(1)+f(2)*fp(2)<0 % If new direction is >90 degrees off the last one flip it.
             f = -f;
         end
+        if f(1)*fp(1)+f(2)*fp(2)<cos(pi/4)
+            f = [NaN NaN];
+        end
+        
         % Next point is current point plus the director field direction.
         newux = u(end,1)+f(1);
         newuy = u(end,2)+f(2);
@@ -141,8 +146,9 @@ function sline = sllame(vx,vy,u0,SL,Fx,Fy,donezo,l,th)
                 lu = 1/((newux2-newux1)*(newuy2-newuy1))*[(newux2-newux)...
                     (newux-newux1)]*[l11 l12; l21 l22]...
                     *[newuy2-newuy; newuy-newuy1];    
-
-                ls = [ls; lu];
+                ls = [ls; l(round(newuya),round(newuxa))];
+                
+                %ls = [ls; lu];
                 fp = f;
                 
                 % If the brightness is below the threshold end the
@@ -167,6 +173,9 @@ function sline = sllame(vx,vy,u0,SL,Fx,Fy,donezo,l,th)
         f = ff(u(1,:));
         if f(1)*fp(1)+f(2)*fp(2)<0
             f = -f;
+        end
+        if f(1)*fp(1)+f(2)*fp(2)<cos(pi/4)
+            f = [NaN NaN];
         end
         newux = u(1,1)+f(1);
         newuy = u(1,2)+f(2);
